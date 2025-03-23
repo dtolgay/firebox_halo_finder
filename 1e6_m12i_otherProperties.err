@@ -1,0 +1,11 @@
+The following modules were not unloaded:
+  (Use "module --force purge" to unload all):
+
+  1) NiaEnv/2019b
+Traceback (most recent call last):
+  File "/gpfs/fs0/scratch/m/murray/dtolgay/post_processing_fire_outputs/firebox_halo_finder/seperate_firebox_galaxies_from_largeBox.py", line 3, in <module>
+    from tools import readsnap, readsnap_FIREBox, readsnap_tripleLatte, constants, functions_readfiles  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/m/murray/dtolgay/tools/readsnap.py", line 2, in <module>
+    import h5py as h5py
+ModuleNotFoundError: No module named 'h5py'
