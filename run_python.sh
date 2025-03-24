@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --account=rrg-rbond-ac
-#SBATCH --nodes=1
+#SBATCH --nodes=5
 #SBATCH --ntasks-per-node=40
 #SBATCH --time=23:00:00
-#SBATCH --job-name=z0_seperatingFireboxGalaxies
-#SBATCH --output=z0_seperatingFireboxGalaxies.out
-#SBATCH --error=z0_seperatingFireboxGalaxies.err
+#SBATCH --job-name=5nodes_z0_seperatingFireboxGalaxies
+#SBATCH --output=5nodes_z0_seperatingFireboxGalaxies.out
+#SBATCH --error=5nodes_z0_seperatingFireboxGalaxies.err
 
 module purge 
 ml python/3.11.5

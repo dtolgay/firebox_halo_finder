@@ -6,3 +6,6 @@ z2.0/*
 z3.0/*
 *.hdf5
 venv/
+*.out 
+*.err
+.gitignore

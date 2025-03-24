@@ -1,12 +1,10 @@
 import sys 
 sys.path.append("/scratch/m/murray/dtolgay/")
-from tools import readsnap, readsnap_FIREBox, readsnap_tripleLatte, constants, functions_readfiles  # type: ignore
-from tools.filter_rotate_galaxy import filter_rotate_galaxy # type: ignore
+from tools import readsnap_fireboxSeperatingGalaxies # type: ignore
 import numpy as np # type: ignore 
 import pandas as pd  # type: ignore
 import h5py
 import functions_AHF
-
 
 def main(redshift):
 
@@ -34,8 +32,11 @@ def main(redshift):
     snapshot_number = '%03d' %snapshot_number
 
     # Read gas and star particles 
-    gas_particles  = readsnap.readsnap(snap_dir_file_path, snapshot_number, 0, cosmological=1)
-    star_particles = readsnap.readsnap(snap_dir_file_path, snapshot_number, 4, cosmological=1)
+    gas_particles  = readsnap_fireboxSeperatingGalaxies.readsnap(snap_dir_file_path, snapshot_number, 0, cosmological=1)
+    star_particles = readsnap_fireboxSeperatingGalaxies.readsnap(snap_dir_file_path, snapshot_number, 4, cosmological=1)
+
+    # TODO: Delete below 
+    print("gas and star particles from FIRE read.")
 
     # Create dataframe for gas particles
     gas_particles_df = pd.DataFrame({
@@ -52,8 +53,9 @@ def main(redshift):
         'internal_energy': gas_particles['u'] * 1e6,  # Converted to [m^2 s^-2]
         'neutral_hydrogen_fraction': gas_particles['nh'],
         'electron_abundance': gas_particles['ne'],
-        'metallicity': gas_particles['z'][:,0],
-        'He_mass_fraction': gas_particles['z'][:,1]
+        # 'metallicity': gas_particles['z'][:,0],
+        'metallicity': gas_particles['z'],
+        # 'He_mass_fraction': gas_particles['z'][:,1]
         # You can add other fractions as needed
     })
 
@@ -66,15 +68,19 @@ def main(redshift):
         'vx': star_particles['v'][:,0],
         'vy': star_particles['v'][:,1],
         'vz': star_particles['v'][:,2],
-        'metallicity': star_particles['z'][:,0],
+        # 'metallicity': star_particles['z'][:,0],
+        'metallicity': star_particles['z'],
         'scale_factor': star_particles['age'],
         'mass': star_particles['m']
     })
 
+    # TODO: Delete below 
+    print("Dataframes for gas and star particles are created.")
+
     # Read header info
-    header_info = readsnap.readsnap(snap_dir_file_path, snapshot_number, 0, header_only=1)
+    header_info = readsnap_fireboxSeperatingGalaxies.readsnap(snap_dir_file_path, snapshot_number, 0, header_only=1)
     hubble      = float(header_info['hubble'])
-    redshift    = float(header_info['redshift'])   
+    redshift_from_header    = float(header_info['redshift'])   
     time        = float(header_info['time'])   
 
     # Read AHF files 
@@ -163,7 +169,8 @@ def main(redshift):
             'u': (filtered_gas_particles['internal_energy'] / 1e6).to_numpy(),  # reverse conversion
             'nh': filtered_gas_particles['neutral_hydrogen_fraction'].to_numpy(),
             'ne': filtered_gas_particles['electron_abundance'].to_numpy(),
-            'z': filtered_gas_particles[['metallicity', 'He_mass_fraction']].to_numpy()  # shape (N, 2)
+            # 'z': filtered_gas_particles[['metallicity', 'He_mass_fraction']].to_numpy()  # shape (N, 2)
+            'z': filtered_gas_particles['metallicity'].to_numpy()  
         }
         
         reconstructed_star_particles = {
