@@ -28,4 +28,4 @@ cd /scratch/m/murray/dtolgay/post_processing_fire_outputs/firebox_halo_finder
 source venv/bin/activate
 
 export PYTHONUNBUFFERED=1
-python seperate_firebox_galaxies_from_largeBox.py __Z__ __START__ __END__
+python seperate_firebox_galaxies_from_largeBox.py 2.0 700 800
