@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set base values
-z=0.0
+z=1.0
 start=0
 end=1000
 step=100

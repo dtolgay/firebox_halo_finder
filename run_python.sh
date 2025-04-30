@@ -3,9 +3,9 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=40
 #SBATCH --time=23:00:00
-#SBATCH --job-name=z2_seperatingFireboxGalaxies
-#SBATCH --output=z2_seperatingFireboxGalaxies.out
-#SBATCH --error=z2_seperatingFireboxGalaxies.err
+#SBATCH --job-name=z1_seperatingFireboxGalaxies
+#SBATCH --output=z1_seperatingFireboxGalaxies.out
+#SBATCH --error=z1_seperatingFireboxGalaxies.err
 
 # module purge 
 # ml python/3.11.5

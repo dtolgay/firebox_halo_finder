@@ -7,6 +7,7 @@ import numpy as np # type: ignore
 import pandas as pd  # type: ignore
 import h5py # type: ignore
 import functions_AHF
+import traceback
 
 def main(redshift, start_halo, stop_halo):
 
@@ -125,7 +126,16 @@ def main(redshift, start_halo, stop_halo):
                         'neutral_hydrogen_fraction': gas_particles['nh'],
                         'electron_abundance': gas_particles['ne'],
                         'metallicity': gas_particles['z'][:,0],
-                        'He_mass_fraction': gas_particles['z'][:,1]
+                        'He_mass_fraction': gas_particles['z'][:,1],
+                        'C_mass_fraction': gas_particles['z'][:,2],
+                        'N_mass_fraction': gas_particles['z'][:,3],
+                        'O_mass_fraction': gas_particles['z'][:,4],
+                        'Ne_mass_fraction': gas_particles['z'][:,5],
+                        'Mg_mass_fraction': gas_particles['z'][:,6],
+                        'Si_mass_fraction': gas_particles['z'][:,7],
+                        'S_mass_fraction': gas_particles['z'][:,8],
+                        'Ca_mass_fraction': gas_particles['z'][:,9],
+                        'Fe_mass_fraction': gas_particles['z'][:,10],
                         # You can add other fractions as needed
                     })
 
@@ -139,6 +149,16 @@ def main(redshift, start_halo, stop_halo):
                         'vy': star_particles['v'][:,1],
                         'vz': star_particles['v'][:,2],
                         'metallicity': star_particles['z'][:,0],
+                        'He_mass_fraction': star_particles['z'][:,1],
+                        'C_mass_fraction': star_particles['z'][:,2],
+                        'N_mass_fraction': star_particles['z'][:,3],
+                        'O_mass_fraction': star_particles['z'][:,4],
+                        'Ne_mass_fraction': star_particles['z'][:,5],
+                        'Mg_mass_fraction': star_particles['z'][:,6],
+                        'Si_mass_fraction': star_particles['z'][:,7],
+                        'S_mass_fraction': star_particles['z'][:,8],
+                        'Ca_mass_fraction': star_particles['z'][:,9],
+                        'Fe_mass_fraction': star_particles['z'][:,10],                        
                         'scale_factor': star_particles['age'],
                         'mass': star_particles['m']
                     })                
@@ -181,32 +201,68 @@ def main(redshift, start_halo, stop_halo):
                     'u': (filtered_gas_particles['internal_energy'] / 1e6).to_numpy(),  # reverse conversion
                     'nh': filtered_gas_particles['neutral_hydrogen_fraction'].to_numpy(),
                     'ne': filtered_gas_particles['electron_abundance'].to_numpy(),
-                    'z': filtered_gas_particles[['metallicity', 'He_mass_fraction']].to_numpy()  # shape (N, 2)
+                    'z': filtered_gas_particles[
+                        [
+                            'metallicity', 
+                            'He_mass_fraction', 
+                            'C_mass_fraction',
+                            'N_mass_fraction',
+                            'O_mass_fraction',
+                            'Ne_mass_fraction',
+                            'Mg_mass_fraction',
+                            'Si_mass_fraction',
+                            'S_mass_fraction',
+                            'Ca_mass_fraction',
+                            'Fe_mass_fraction' 
+                        ]].to_numpy()                                                 # shape (N, 11)
                 }
 
                 reconstructed_star_particles = {
                     'p': filtered_star_particles[['x', 'y', 'z']].to_numpy(),         # shape (N, 3)
                     'v': filtered_star_particles[['vx', 'vy', 'vz']].to_numpy(),      # shape (N, 3)
-                    'z': filtered_star_particles[['metallicity']].to_numpy(),         # shape (N, 1) — or (N,) depending on original
+                    'z': filtered_star_particles[
+                        [
+                            'metallicity', 
+                            'He_mass_fraction', 
+                            'C_mass_fraction',
+                            'N_mass_fraction',
+                            'O_mass_fraction',
+                            'Ne_mass_fraction',
+                            'Mg_mass_fraction',
+                            'Si_mass_fraction',
+                            'S_mass_fraction',
+                            'Ca_mass_fraction',
+                            'Fe_mass_fraction' 
+                        ]].to_numpy(),                                                # shape (N, 11)                    
                     'age': filtered_star_particles['scale_factor'].to_numpy(),        # shape (N,)
                     'm': filtered_star_particles['mass'].to_numpy()                   # shape (N,)
                 }
 
                 # Save galaxies into a hdf5 file
                 file_name = f"gal_{row}.hdf5"
-                with h5py.File(f'z{redshift}/{file_name}', 'w') as f: 
+                with h5py.File(f'z{redshift}/{file_name}', 'w') as f:
+                    # Gas 
                     gas_group = f.create_group('gas')
                     for key, value in reconstructed_gas_particles.items():
                         gas_group.create_dataset(key, data=value)
 
+                    # Stars
                     stars_group = f.create_group('star')
                     for key, value in reconstructed_star_particles.items():
                         stars_group.create_dataset(key, data=value)
 
+                    # header 
+                    header_group = f.create_group('header')
+                    for key, value in header_info.items():
+                        header_group.create_dataset(key, data=value)
+
                 print(f"{file_name} written!")                            
 
             except Exception as e:
-                print(f"Exception occured: \n{e}")
+                print("Exception occurred:")
+                print(f"Type: {type(e)}")
+                print(f"Message: {e}")
+                traceback.print_exc()
 
 
             # Write halos to a file 

@@ -9,3 +9,4 @@ venv/
 *.out 
 *.err
 .gitignore
+*.csv
