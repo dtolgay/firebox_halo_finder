@@ -63,13 +63,26 @@ def main(redshift, start_halo, stop_halo):
     )
     print(f"{halo_fdir} is read!")
 
+    all_halos = halos.copy()
+
     # Sort the halos according to the Mvir in descending order    
     halos = halos.sort_values(by="Mvir", ascending=False).reset_index(drop=True) 
     halos['new_id_after_sorting'] = halos.index
     
+    # Get hostHalo != -1
+    halos_not_used = halos[halos['hostHalo'] != -1].copy()
+
+    # Use halos with only hostHalo == -1 
+    halos = halos[halos['hostHalo'] == -1]
+    # Create a new column to store the new ID after sorting
+    halos['new_id_after_sorting'] = halos.index
+
     # Write all halos into a file 
     halos.to_csv(f"z{redshift}/halos_used.csv", index=False)
-    print(f"All halos are written to z{redshift}/halos_used.csv")
+    halos_not_used.to_csv(f"z{redshift}/halos_not_used.csv", index=False)
+    all_halos.to_csv(f"z{redshift}/all_halos.csv", index=False)
+    print(f"Halo informations are written.")
+
 
     ### For loop to seperete galaxies from the large box ###
     total_number_of_gas_particles = 0

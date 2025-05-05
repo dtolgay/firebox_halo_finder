@@ -10,3 +10,4 @@ venv/
 *.err
 .gitignore
 *.csv
+job_z*

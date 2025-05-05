@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set base values
-z=1.0
+z=2.0
 start=0
 end=1000
 step=100
@@ -16,7 +16,7 @@ for ((i=start; i<end; i+=step)); do
     sed -i "s/__Z__/$z/" "$job_file"
     sed -i "s/__START__/$i/" "$job_file"
     sed -i "s/__END__/$next/" "$job_file"
-    sed -i "s/__NAME__/z2_firebox_${i}_${next}/" "$job_file"
+    sed -i "s/__NAME__/z${z}_firebox_${i}_${next}/" "$job_file"
 
     # Submit the job
     sbatch "$job_file"
