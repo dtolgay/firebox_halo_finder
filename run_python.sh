@@ -7,25 +7,37 @@
 #SBATCH --output=__NAME__.out
 #SBATCH --error=__NAME__.err
 
-# module purge 
-# ml python/3.11.5
-
-# cd /scratch/m/murray/dtolgay/post_processing_fire_outputs/firebox_halo_finder
-
-# # Run the virtual environment
-# source venv/bin/activate
-
-# export PYTHONUNBUFFERED=1 # this is the write .out file while the code is running 
-# python seperate_firebox_galaxies_from_largeBox.py 2.0 900 1000
-
-
-
 module purge 
 ml python/3.11.5
 
 cd /scratch/m/murray/dtolgay/post_processing_fire_outputs/firebox_halo_finder
-
 source venv/bin/activate
-
 export PYTHONUNBUFFERED=1
-python seperate_firebox_galaxies_from_largeBox.py __Z__ __START__ __END__
+
+# Parameters
+z=__Z__
+start=__START__
+end=__END__
+n_galaxies=10
+
+# Calculate chunk size
+step=$(( (end - start) / n_galaxies ))
+
+# Run in background
+for ((i=0; i<n_galaxies; i++)); do
+    gal_start=$((start + i * step))
+
+    # Use the last galaxy number as the end of the final chunk
+    if [ $i -eq $((n_galaxies - 1)) ]; then
+        gal_end=$end
+    else
+        gal_end=$((gal_start + step))
+    fi
+
+    echo "Processing galaxies $gal_start to $gal_end"
+    python seperate_firebox_galaxies_from_largeBox.py $z $gal_start $gal_end &
+done
+
+# Wait for all background jobs to finish
+wait
+echo "All galaxy processes completed."
