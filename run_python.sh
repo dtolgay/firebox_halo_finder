@@ -5,7 +5,7 @@
 #SBATCH --time=23:00:00
 #SBATCH --job-name=__NAME__
 #SBATCH --output=__NAME__.out
-#SBATCH --error=__NAME__.er
+#SBATCH --error=__NAME__.err
 
 # module purge 
 # ml python/3.11.5

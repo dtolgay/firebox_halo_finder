@@ -11,3 +11,5 @@ venv/
 .gitignore
 *.csv
 job_z*
+z1.0_firebox*
+z2.0_firebox*
